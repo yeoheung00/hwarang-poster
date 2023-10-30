@@ -132,7 +132,7 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                 justifyContent: "center",
                 position: "relative",
                 transition: "0.5s",
-                padding: "3px"
+                padding: windowResolution.width / resolution.width * 0.015 + "px"
             }}>
                 <div ref={itemRef} className="" style={{
                     overflow: "hidden",
