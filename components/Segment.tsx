@@ -7,21 +7,21 @@ type SegmentType = {
     coordinate: { x: number, y: number },
     windowResolution: { width: number, height: number },
     resolution: { width: number, height: number },
-    position: { top: number, left: number, direction: string, char: string },
+    position: { top: number, left: number, direction: string, char: string, color: number },
     isClicked: boolean,
     clickedCordinate: { x: number, y: number },
     isRandom: boolean,
     randomData: { x: number, y: number, limit: number },
-    big: {x: number, y: number, size: number }[]
+    big: { x: number, y: number, size: number }[]
 }
 
 export default function Segment({ coordinate, windowResolution, resolution, position, isClicked, clickedCordinate, isRandom, randomData, big }: SegmentType) {
     let sizeResolution = resolution;
     let isTop = false;
-    big.forEach((data)=>{
-        if(Number(data.x) == coordinate.x && Number(data.y) == coordinate.y) {
+    big.forEach((data) => {
+        if (Number(data.x) == coordinate.x && Number(data.y) == coordinate.y) {
             isTop = true;
-            sizeResolution = {width: resolution.width/Number(data.size), height: resolution.height/Number(data.size)}
+            sizeResolution = { width: resolution.width / Number(data.size), height: resolution.height / Number(data.size) }
         }
     });
 
@@ -30,7 +30,7 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
     let count = 0;
     let timer = 0;
     let isMax = false;
-    const limit = 6;
+    const limit = 3;
     const amplitude = 60;
     const itemRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +67,7 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
     }, [isClicked]);
 
 
-    const randomDistance = Math.sqrt(Math.pow(coordinate.x - randomData.x, 2) + Math.pow(coordinate.y - randomData.y, 2));
+    const randomDistance = Math.sqrt(Math.pow(coordinate.x - randomData.x / 100 * resolution.width, 2) + Math.pow(coordinate.y - randomData.y / 100 * resolution.height, 2));
 
     let randomCount = 0;
     let randomTimer = 0;
@@ -108,6 +108,7 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
         }
     }, [isRandom]);
 
+    const colors = ["#d93924", "#32823a", "#0e589d", "#ebca1a", "#692f1a"];
 
     return (
         <div className={styles.root} style={{
@@ -118,8 +119,8 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
             alignItems: "center",
             justifyContent: "center",
             position: "relative",
-            zIndex: isTop?999:0,
-            backgroundColor: "#d93924",
+            zIndex: isTop ? 999 : 0,
+            backgroundColor: "black",
             // border: "1px solid white",
         }}>
             <div ref={randomRef} style={{
@@ -145,9 +146,10 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                     WebkitMaskImage: `url('/char2/${position.char}.svg')`,
                     WebkitMaskSize: 'cover',
                     maskRepeat: 'no-repeat',
-                    WebkitMaskRepeat: 'no-repeat'
+                    WebkitMaskRepeat: 'no-repeat',
+                    backgroundColor: colors[position.color]
                 }}>
-                    <img src='/back.jpg' alt='segment' style={
+                    {/* <img src='/back.jpg' alt='segment' style={
                         {
                             position: "absolute",
                             width: position.direction === "width" ? "100vw" : "auto",
@@ -155,7 +157,7 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                             top: position.top + "px",
                             left: position.left + "px"
                         }
-                    } />
+                    } /> */}
                 </div>
             </div>
         </div>

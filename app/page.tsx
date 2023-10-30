@@ -4,11 +4,11 @@ import Segment from 'components/Segment'
 import { MouseEvent, useEffect, useState } from 'react'
 
 export default function Home() {
-  const segmentRatio = {width: 17, height: 8};
+  const segmentRatio = { width: 17, height: 8 };
   const backgroundResolution = { width: 5120, height: 2880 };
   const [resolution, setResolution] = useState({ width: 0, height: 0 });
   const [windowResolution, setWindowResolution] = useState({ width: 0, height: 0 });
-  const [segments, setSegments] = useState<{ top: number, left: number, direction: string, char: string }[][]>([]);
+  const [segments, setSegments] = useState<{ top: number, left: number, direction: string, char: string, color: number }[][]>([]);
   const [big, setBig] = useState<{ x: number, y: number, size: number }[]>([]);
 
   useEffect(() => {
@@ -23,13 +23,13 @@ export default function Home() {
   useEffect(() => {
     //console.log('windowResolution', windowResolution);
     let tempResolution = { width: 16, height: 34 };
-      tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height*8/17);
-      tempResolution.height = 100;
-      while (tempResolution.height > 0) {
-        if (tempResolution.width * tempResolution.height < 200) break;
-        tempResolution.height--;
-        tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height*8/17);
-      }
+    tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height * 8 / 17);
+    tempResolution.height = 100;
+    while (tempResolution.height > 0) {
+      if (tempResolution.width * tempResolution.height < 200) break;
+      tempResolution.height--;
+      tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height * 8 / 17);
+    }
     setResolution(tempResolution);
   }, [windowResolution]);
 
@@ -39,18 +39,18 @@ export default function Home() {
 
       let count = 0;
       for (let i = 0; i < 15; i++) {
-        if(count > 2000) break;
+        if (count > 2000) break;
         count++;
-        const size = Math.round((Math.random()*2+2)); 
+        const size = Math.round((Math.random() * 2 + 2));
         const x = Math.round(Math.random() * (resolution.width - size));
         const y = Math.round(Math.random() * (resolution.height - size));
-        
+
 
         tempCoordinate.push({ x: x, y: y, size: size });
 
-        for (let j = 0; j < tempCoordinate.length-1; j++) { 
+        for (let j = 0; j < tempCoordinate.length - 1; j++) {
           const data = tempCoordinate[j];
-          if (isMeet({x: x, y: y, size: size}, {x: data.x, y: data.y, size: data.size}) || isMeet({x: data.x, y: data.y, size: data.size}, {x: x, y: y, size: size})) { 
+          if (isMeet({ x: x, y: y, size: size }, { x: data.x, y: data.y, size: data.size }) || isMeet({ x: data.x, y: data.y, size: data.size }, { x: x, y: y, size: size })) {
             tempCoordinate.pop();
             i--;
             break;
@@ -91,13 +91,14 @@ export default function Home() {
   useEffect(() => {
     const direction = windowResolution.width / windowResolution.height > backgroundResolution.width / backgroundResolution.height ? "width" : "height";
 
-    let segments_temp: { top: number, left: number, direction: string, char: string }[][] = [];
+    let segments_temp: { top: number, left: number, direction: string, char: string, color: number }[][] = [];
     for (let y = 0; y < resolution.height; y++) {
-      let row_temp: { top: number, left: number, direction: string, char: string }[] = [];
+      let row_temp: { top: number, left: number, direction: string, char: string, color: number }[] = [];
       for (let x = 0; x < resolution.width; x++) {
         let top = 0;
         let left = 0;
-        const char = String.fromCharCode(Math.floor(Math.random()*26) + 97);
+        const char = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+        const color = Math.floor(Math.random() * 5);
         if (direction === "height") {
           top = (windowResolution.height / resolution.height) * y * -1;
           left = (backgroundResolution.width / backgroundResolution.height * windowResolution.height - windowResolution.width) / -2 - windowResolution.width / resolution.width * x;
@@ -106,7 +107,7 @@ export default function Home() {
           top = (backgroundResolution.height / backgroundResolution.width * windowResolution.width - windowResolution.height) / -2 - windowResolution.height / resolution.height * y;
           left = (windowResolution.width / resolution.width) * x * -1;
         }
-        row_temp.push({ top: top, left: left, direction: direction, char: char });
+        row_temp.push({ top: top, left: left, direction: direction, char: char, color: color });
       }
       segments_temp.push(row_temp);
     }
@@ -132,8 +133,8 @@ export default function Home() {
 
   function random() {
     const timer = Math.floor(Math.random() * 3500) + 500;
-    const rx = Math.floor(Math.random() * resolution.width);
-    const ry = Math.floor(Math.random() * resolution.height);
+    const rx = Math.floor(Math.random() * 100);
+    const ry = Math.floor(Math.random() * 100);
     const limit = Math.random() * 1.5 + 2.5;
     setRandomData({ x: rx, y: ry, limit: limit });
     setIsRandom(true);
@@ -156,7 +157,7 @@ export default function Home() {
           )}
         </div>)
       }
-      <img className={styles.fixed} src='/front.svg' />
+      <img className={styles.fixed} src='/front.svg' style={{ filter: 'drop-shadow(0 0 20px #000)' }} />
       <div className={styles.feedback} onMouseDown={handlerMouseDown} onMouseUp={handlerMouseUp} />
     </main>
   )
