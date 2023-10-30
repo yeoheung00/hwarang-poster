@@ -7,12 +7,12 @@ type SegmentType = {
     coordinate: { x: number, y: number },
     windowResolution: { width: number, height: number },
     resolution: { width: number, height: number },
-    position: { top: number, left: number, direction: string },
+    position: { top: number, left: number, direction: string, char: string },
     isClicked: boolean,
     clickedCordinate: { x: number, y: number },
     isRandom: boolean,
     randomData: { x: number, y: number, limit: number },
-    big: {x: number, y: number, size: number}[]
+    big: {x: number, y: number, size: number }[]
 }
 
 export default function Segment({ coordinate, windowResolution, resolution, position, isClicked, clickedCordinate, isRandom, randomData, big }: SegmentType) {
@@ -108,6 +108,7 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
         }
     }, [isRandom]);
 
+
     return (
         <div className={styles.root} style={{
             overflow: "hidden",
@@ -118,8 +119,8 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
             justifyContent: "center",
             position: "relative",
             zIndex: isTop?999:0,
-            backgroundColor: "white",
-            border: "1px solid white"
+            backgroundColor: "#d93924",
+            // border: "1px solid white",
         }}>
             <div ref={randomRef} style={{
                 overflow: "hidden",
@@ -129,7 +130,8 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
-                transition: "0.5s"
+                transition: "0.5s",
+                padding: "3px"
             }}>
                 <div ref={itemRef} className="" style={{
                     overflow: "hidden",
@@ -138,9 +140,14 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                     position: "relative",
                     // left: "1px",
                     // top: "1px",
-                    transition: "0.5s"
+                    transition: "0.5s",
+                    maskImage: `url('/char2/${position.char}.svg')`,
+                    WebkitMaskImage: `url('/char2/${position.char}.svg')`,
+                    WebkitMaskSize: 'cover',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskRepeat: 'no-repeat'
                 }}>
-                    <img src='/back.png' alt='segment' style={
+                    <img src='/back.jpg' alt='segment' style={
                         {
                             position: "absolute",
                             width: position.direction === "width" ? "100vw" : "auto",

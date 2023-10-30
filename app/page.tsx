@@ -4,10 +4,11 @@ import Segment from 'components/Segment'
 import { MouseEvent, useEffect, useState } from 'react'
 
 export default function Home() {
-  const backgroundResolution = { width: 1360, height: 1920 };
-  const [resolution, setResolution] = useState({ width: 12, height: 21 });
+  const segmentRatio = {width: 17, height: 8};
+  const backgroundResolution = { width: 5120, height: 2880 };
+  const [resolution, setResolution] = useState({ width: 0, height: 0 });
   const [windowResolution, setWindowResolution] = useState({ width: 0, height: 0 });
-  const [segments, setSegments] = useState<{ top: number, left: number, direction: string }[][]>([]);
+  const [segments, setSegments] = useState<{ top: number, left: number, direction: string, char: string }[][]>([]);
   const [big, setBig] = useState<{ x: number, y: number, size: number }[]>([]);
 
   useEffect(() => {
@@ -21,24 +22,14 @@ export default function Home() {
 
   useEffect(() => {
     //console.log('windowResolution', windowResolution);
-    let tempResolution = { width: 17, height: 17 };
-    if (windowResolution.width > windowResolution.height) {
-      tempResolution.width = Math.round(17 * windowResolution.width / windowResolution.height);
-      tempResolution.height = 17;
+    let tempResolution = { width: 16, height: 34 };
+      tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height*8/17);
+      tempResolution.height = 100;
       while (tempResolution.height > 0) {
-        if (tempResolution.width * tempResolution.height < 300) break;
+        if (tempResolution.width * tempResolution.height < 200) break;
         tempResolution.height--;
-        tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height);
+        tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height*8/17);
       }
-    } else {
-      tempResolution.width = 17;
-      tempResolution.height = Math.round(17 * windowResolution.height / windowResolution.width);
-      while (tempResolution.width > 0) {
-        if (tempResolution.width * tempResolution.height < 300) break;
-        tempResolution.width--;
-        tempResolution.height = Math.round(tempResolution.width * windowResolution.height / windowResolution.width);
-      }
-    }
     setResolution(tempResolution);
   }, [windowResolution]);
 
@@ -47,12 +38,13 @@ export default function Home() {
       let tempCoordinate: { x: number, y: number, size: number }[] = [];
 
       let count = 0;
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 15; i++) {
         if(count > 2000) break;
         count++;
         const size = Math.round((Math.random()*2+2)); 
         const x = Math.round(Math.random() * (resolution.width - size));
         const y = Math.round(Math.random() * (resolution.height - size));
+        
 
         tempCoordinate.push({ x: x, y: y, size: size });
 
@@ -99,12 +91,13 @@ export default function Home() {
   useEffect(() => {
     const direction = windowResolution.width / windowResolution.height > backgroundResolution.width / backgroundResolution.height ? "width" : "height";
 
-    let segments_temp: { top: number, left: number, direction: string }[][] = [];
+    let segments_temp: { top: number, left: number, direction: string, char: string }[][] = [];
     for (let y = 0; y < resolution.height; y++) {
-      let row_temp: { top: number, left: number, direction: string }[] = [];
+      let row_temp: { top: number, left: number, direction: string, char: string }[] = [];
       for (let x = 0; x < resolution.width; x++) {
         let top = 0;
         let left = 0;
+        const char = String.fromCharCode(Math.floor(Math.random()*26) + 97);
         if (direction === "height") {
           top = (windowResolution.height / resolution.height) * y * -1;
           left = (backgroundResolution.width / backgroundResolution.height * windowResolution.height - windowResolution.width) / -2 - windowResolution.width / resolution.width * x;
@@ -113,7 +106,7 @@ export default function Home() {
           top = (backgroundResolution.height / backgroundResolution.width * windowResolution.width - windowResolution.height) / -2 - windowResolution.height / resolution.height * y;
           left = (windowResolution.width / resolution.width) * x * -1;
         }
-        row_temp.push({ top: top, left: left, direction: direction });
+        row_temp.push({ top: top, left: left, direction: direction, char: char });
       }
       segments_temp.push(row_temp);
     }
@@ -163,7 +156,7 @@ export default function Home() {
           )}
         </div>)
       }
-      <img className={styles.fixed} src='/text.png' />
+      <img className={styles.fixed} src='/front.svg' />
       <div className={styles.feedback} onMouseDown={handlerMouseDown} onMouseUp={handlerMouseUp} />
     </main>
   )
