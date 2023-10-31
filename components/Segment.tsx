@@ -11,19 +11,11 @@ type SegmentType = {
     isClicked: boolean,
     clickedCordinate: { x: number, y: number },
     isRandom: boolean,
-    randomData: { x: number, y: number, limit: number },
-    big: { x: number, y: number, size: number }[]
+    randomData: { x: number, y: number, limit: number }
 }
 
-export default function Segment({ coordinate, windowResolution, resolution, position, isClicked, clickedCordinate, isRandom, randomData, big }: SegmentType) {
+export default function Segment({ coordinate, windowResolution, resolution, position, isClicked, clickedCordinate, isRandom, randomData }: SegmentType) {
     let sizeResolution = resolution;
-    let isTop = false;
-    big.forEach((data) => {
-        if (Number(data.x) == coordinate.x && Number(data.y) == coordinate.y) {
-            isTop = true;
-            sizeResolution = { width: resolution.width / Number(data.size), height: resolution.height / Number(data.size) }
-        }
-    });
 
     const distance = Math.sqrt(Math.pow(coordinate.x - clickedCordinate.x, 2) + Math.pow(coordinate.y - clickedCordinate.y, 2));
 
@@ -110,6 +102,8 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
 
     const colors = ["#d93924", "#32823a", "#0e589d", "#ebca1a", "#692f1a"];
 
+    const isEven = coordinate.y % 2 === 0;
+
     return (
         <div className={styles.root} style={{
             overflow: "hidden",
@@ -119,7 +113,6 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
             alignItems: "center",
             justifyContent: "center",
             position: "relative",
-            zIndex: isTop ? 999 : 0,
             backgroundColor: "black",
             // border: "1px solid white",
         }}>
@@ -134,7 +127,12 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                 transition: "0.5s",
                 padding: windowResolution.width / resolution.width * 0.015 + "px"
             }}>
-                <div ref={itemRef} className="" style={{
+                <div ref={itemRef} className="" style={isEven && coordinate.x === 0 ? {
+                    overflow: "hidden",
+                    width: "100%",
+                    height: "100%",
+                    position: "relative",
+                } : {
                     overflow: "hidden",
                     width: "100%",
                     height: "100%",
