@@ -26,7 +26,7 @@ export default function Home() {
     tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height * 8 / 17);
     tempResolution.height = 100;
     while (tempResolution.height > 0) {
-      if (tempResolution.width * tempResolution.height < 200) break;
+      if (tempResolution.width * tempResolution.height < 100) break;
       tempResolution.height--;
       tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height * 8 / 17);
     }
@@ -38,12 +38,12 @@ export default function Home() {
       let tempCoordinate: { x: number, y: number, size: number }[] = [];
 
       let count = 0;
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 5; i++) {
         if (count > 2000) break;
         count++;
-        const size = Math.round((Math.random() * 2 + 2));
-        const x = Math.round(Math.random() * (resolution.width - size));
-        const y = Math.round(Math.random() * (resolution.height - size));
+        const size = Math.floor((Math.random() * 2 + 2));
+        const x = Math.floor(Math.random() * (resolution.width - size + 1));
+        const y = Math.floor(Math.random() * (resolution.height - size + 1));
 
 
         tempCoordinate.push({ x: x, y: y, size: size });
