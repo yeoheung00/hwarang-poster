@@ -4,7 +4,7 @@ import Segment from 'components/Segment'
 import { MouseEvent, useEffect, useState } from 'react'
 
 export default function Home() {
-  const segmentRatio = { width: 17, height: 8 };
+  const segmentRatio = { width: 18, height: 9 };
   const backgroundResolution = { width: 5120, height: 2880 };
   const [resolution, setResolution] = useState({ width: 0, height: 0 });
   const [windowResolution, setWindowResolution] = useState({ width: 0, height: 0 });
@@ -22,12 +22,12 @@ export default function Home() {
   useEffect(() => {
     //console.log('windowResolution', windowResolution);
     let tempResolution = { width: 16, height: 34 };
-    tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height * 8 / 17);
+    tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height * segmentRatio.height / segmentRatio.width);
     tempResolution.height = 100;
     while (tempResolution.height > 0) {
       if (tempResolution.width * tempResolution.height < 100) break;
       tempResolution.height--;
-      tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height * 8 / 17);
+      tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height * segmentRatio.height / segmentRatio.width);
     }
     setResolution(tempResolution);
   }, [windowResolution]);
@@ -38,7 +38,7 @@ export default function Home() {
     let segments_temp: { top: number, left: number, direction: string, char: string, color: number }[][] = [];
     for (let y = 0; y < resolution.height; y++) {
       let row_temp: { top: number, left: number, direction: string, char: string, color: number }[] = [];
-      for (let x = 0; x < resolution.width; x++) {
+      for (let x = 0; x < resolution.width + (y % 2 === 0 ? 1 : 0); x++) {
         let top = 0;
         let left = 0;
         const char = String.fromCharCode(Math.floor(Math.random() * 26) + 97);

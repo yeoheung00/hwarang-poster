@@ -125,14 +125,9 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                 justifyContent: "center",
                 position: "relative",
                 transition: "0.5s",
-                padding: windowResolution.width / resolution.width * 0.015 + "px"
+                padding: windowResolution.width / resolution.width / 36 + "px"
             }}>
-                <div ref={itemRef} className="" style={isEven && coordinate.x === 0 ? {
-                    overflow: "hidden",
-                    width: "100%",
-                    height: "100%",
-                    position: "relative",
-                } : {
+                <div ref={itemRef} className="" style={{
                     overflow: "hidden",
                     width: "100%",
                     height: "100%",
@@ -142,10 +137,10 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                     transition: "0.5s",
                     maskImage: `url('/char2/${position.char}.svg')`,
                     WebkitMaskImage: `url('/char2/${position.char}.svg')`,
-                    WebkitMaskSize: 'cover',
+                    WebkitMaskSize: '100%',
                     maskRepeat: 'no-repeat',
                     WebkitMaskRepeat: 'no-repeat',
-                    backgroundColor: colors[position.color]
+                    backgroundColor: `rgba(255, 0, 0, ${position.color * 0.1 + 0.5})`
                 }}>
                     {/* <img src='/back.jpg' alt='segment' style={
                         {
