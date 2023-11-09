@@ -25,7 +25,7 @@ export default function Home() {
     tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height * segmentRatio.height / segmentRatio.width);
     tempResolution.height = 100;
     while (tempResolution.height > 0) {
-      if (tempResolution.width * tempResolution.height < 100) break;
+      if (tempResolution.width * tempResolution.height < 300) break;
       tempResolution.height--;
       tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height * segmentRatio.height / segmentRatio.width);
     }
