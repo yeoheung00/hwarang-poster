@@ -26,7 +26,7 @@ export default function Test() {
   }
 
   return (
-    <main onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchCancel={touchCancel} className={styles.root}>
+    <main onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd} onTouchCancel={touchCancel} className={styles.root}>
       <div className={styles.display}>
         <h1>X: {coordinate.x}</h1>
         <h1>y: {coordinate.y}</h1>
