@@ -5,7 +5,8 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: white;
+  background-color: black;
+  position: relative;
 }
 
 .row{

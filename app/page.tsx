@@ -4,12 +4,11 @@ import Segment from 'components/Segment'
 import { MouseEvent, useEffect, useState } from 'react'
 
 export default function Home() {
-  const segmentRatio = { width: 17, height: 8 };
+  const segmentRatio = { width: 18, height: 9 };
   const backgroundResolution = { width: 5120, height: 2880 };
   const [resolution, setResolution] = useState({ width: 0, height: 0 });
   const [windowResolution, setWindowResolution] = useState({ width: 0, height: 0 });
   const [segments, setSegments] = useState<{ top: number, left: number, direction: string, char: string, color: number }[][]>([]);
-  const [big, setBig] = useState<{ x: number, y: number, size: number }[]>([]);
 
   useEffect(() => {
     //console.log('start');
@@ -23,70 +22,15 @@ export default function Home() {
   useEffect(() => {
     //console.log('windowResolution', windowResolution);
     let tempResolution = { width: 16, height: 34 };
-    tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height * 8 / 17);
+    tempResolution.width = Math.round(100 * windowResolution.width / windowResolution.height * segmentRatio.height / segmentRatio.width);
     tempResolution.height = 100;
     while (tempResolution.height > 0) {
-      if (tempResolution.width * tempResolution.height < 100) break;
+      if (tempResolution.width * tempResolution.height < 300) break;
       tempResolution.height--;
-      tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height * 8 / 17);
+      tempResolution.width = Math.round(tempResolution.height * windowResolution.width / windowResolution.height * segmentRatio.height / segmentRatio.width);
     }
     setResolution(tempResolution);
   }, [windowResolution]);
-
-  useEffect(() => {
-    if (resolution.width > 4 && resolution.height > 4) {
-      let tempCoordinate: { x: number, y: number, size: number }[] = [];
-
-      let count = 0;
-      for (let i = 0; i < 5; i++) {
-        if (count > 2000) break;
-        count++;
-        const size = Math.floor((Math.random() * 2 + 2));
-        const x = Math.floor(Math.random() * (resolution.width - size + 1));
-        const y = Math.floor(Math.random() * (resolution.height - size + 1));
-
-
-        tempCoordinate.push({ x: x, y: y, size: size });
-
-        for (let j = 0; j < tempCoordinate.length - 1; j++) {
-          const data = tempCoordinate[j];
-          if (isMeet({ x: x, y: y, size: size }, { x: data.x, y: data.y, size: data.size }) || isMeet({ x: data.x, y: data.y, size: data.size }, { x: x, y: y, size: size })) {
-            tempCoordinate.pop();
-            i--;
-            break;
-          }
-        };
-      }
-      // console.log(count);
-      setBig(tempCoordinate);
-    }
-
-  }, [resolution]);
-
-  function isMeet(box1: { x: number, y: number, size: number }, box2: { x: number, y: number, size: number }) {
-    const rec_x1 = box1.x
-    const rec_y1 = box1.y
-    const rec_x2 = box1.x + box1.size
-    const rec_y2 = box1.y + box1.size
-
-    const rec2_x1 = box2.x
-    const rec2_y1 = box2.y
-    const rec2_x2 = box2.x + box2.size
-    const rec2_y2 = box2.y + box2.size
-
-    const maxrec_x = Math.max(rec_x1, rec_x2)
-    const minrec_x = Math.min(rec_x1, rec_x2)
-    const maxrec_y = Math.max(rec_y1, rec_y2)
-    const minrec_y = Math.min(rec_y1, rec_y2)
-
-    if (!(minrec_x < rec2_x1 && rec2_x1 < maxrec_x) &&
-      !(minrec_x < rec2_x2 && rec2_x2 < maxrec_x) &&
-      !(minrec_y < rec2_y1 && rec2_y1 < maxrec_y) &&
-      !(minrec_y < rec2_y2 && rec2_y2 < maxrec_y))
-      return false;
-    else
-      return true;
-  }
 
   useEffect(() => {
     const direction = windowResolution.width / windowResolution.height > backgroundResolution.width / backgroundResolution.height ? "width" : "height";
@@ -94,7 +38,7 @@ export default function Home() {
     let segments_temp: { top: number, left: number, direction: string, char: string, color: number }[][] = [];
     for (let y = 0; y < resolution.height; y++) {
       let row_temp: { top: number, left: number, direction: string, char: string, color: number }[] = [];
-      for (let x = 0; x < resolution.width; x++) {
+      for (let x = 0; x < resolution.width + (y % 2 === 0 ? 1 : 0); x++) {
         let top = 0;
         let left = 0;
         const char = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
@@ -146,13 +90,17 @@ export default function Home() {
   return (
     <main className={styles.main}>
       {
-        segments.map((row, row_idx) => <div key={row_idx} className={styles.row}>
+        segments.map((row, row_idx) => <div key={row_idx} className={styles.row} style={{
+          position: 'relative',
+          top: '0px',
+          left: row_idx % 2 === 0 ? windowResolution.width / resolution.width / 2 * -1 + 'px' : '0px'
+        }}>
           {row.map((col, col_idx) => (<div key={col_idx} className={styles.col} style={{
             overflow: "visible",
             width: windowResolution.width / resolution.width + "px",
-            height: windowResolution.height / resolution.height + "px"
+            height: windowResolution.height / resolution.height + "px",
           }}>
-            <Segment coordinate={{ x: col_idx, y: row_idx }} windowResolution={windowResolution} resolution={resolution} position={segments[row_idx][col_idx]} isClicked={isClicked} clickedCordinate={clickedCordinate} isRandom={isRandom} randomData={randomData} big={big} />
+            <Segment coordinate={{ x: col_idx, y: row_idx }} windowResolution={windowResolution} resolution={resolution} position={segments[row_idx][col_idx]} isClicked={isClicked} clickedCordinate={clickedCordinate} isRandom={isRandom} randomData={randomData} />
           </div>)
           )}
         </div>)
