@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from './Segment.module.css'
+import { animated, useSpring, easings } from '@react-spring/web';
 
 type SegmentType = {
     coordinate: { x: number, y: number },
@@ -24,29 +25,43 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
     let isMax = false;
     const limit = 3;
     const amplitude = 60;
-    const itemRef = useRef<HTMLDivElement>(null);
+
+    const springConfig = {
+        easings: easings.easeOutBack,
+        duration: 100
+    }
+
+    const [clickProps, setClickProps] = useSpring(() => ({
+        width: '100%',
+        height: '100%',
+        config: springConfig
+    }))
 
     function click() {
         if (distance > limit) return;
         const ani = requestAnimationFrame(click);
-        if (itemRef.current) {
-            count++;
-            if (count > distance * 10) {
-                timer++;
-                if (!isMax) {
-                    const amplitude_ = amplitude + ((90 - amplitude) * distance / limit);
-                    itemRef.current.style.setProperty("width", amplitude_ + "%");
-                    itemRef.current.style.setProperty("height", amplitude_ + "%");
-                    isMax = true;
-                }
-                if (isMax && timer > 50) {
-                    itemRef.current.style.setProperty("width", "100%");
-                    itemRef.current.style.setProperty("height", "100%");
-                    isMax = false;
-                    timer = 0;
-                    count = 0;
-                    cancelAnimationFrame(ani);
-                }
+        count++;
+        if (count > distance * 4) {
+            timer++;
+            if (!isMax) {
+                const amplitude_ = amplitude + ((90 - amplitude) * distance / limit);
+                setClickProps({
+                    width: amplitude_ + '%',
+                    height: amplitude_ + '%',
+                    config: springConfig
+                })
+                isMax = true;
+            }
+            if (isMax && timer > 50) {
+                setClickProps({
+                    width: '100%',
+                    height: '100%',
+                    config: springConfig
+                })
+                isMax = false;
+                timer = 0;
+                count = 0;
+                cancelAnimationFrame(ani);
             }
         }
     }
@@ -66,29 +81,38 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
     let randomIsMax = false;
     const randomLimit = randomData.limit;
     const randomAmplitude = 90;
-    const randomRef = useRef<HTMLDivElement>(null);
+
+
+    const [randomProps, setRandomProps] = useSpring(() => ({
+        width: '100%',
+        height: '100%',
+        config: springConfig
+    }))
 
     function random() {
         if (randomDistance > randomLimit) return;
         const ani = requestAnimationFrame(random);
-        if (randomRef.current) {
-            randomCount++;
-            if (randomCount > randomDistance * 30) {
-                randomTimer++;
-                if (!randomIsMax) {
-                    const randomAmplitude_ = randomAmplitude + ((95 - randomAmplitude) * randomDistance / randomLimit);
-                    randomRef.current.style.setProperty("width", randomAmplitude_ + "%");
-                    randomRef.current.style.setProperty("height", randomAmplitude_ + "%");
-                    randomIsMax = true;
-                }
-                if (randomIsMax && randomTimer > 200) {
-                    randomRef.current.style.setProperty("width", "100%");
-                    randomRef.current.style.setProperty("height", "100%");
-                    randomIsMax = false;
-                    randomTimer = 0;
-                    randomCount = 0;
-                    cancelAnimationFrame(ani);
-                }
+        randomCount++;
+        if (randomCount > randomDistance * 30) {
+            randomTimer++;
+            if (!randomIsMax) {
+                setRandomProps({
+                    width: randomAmplitude + '%',
+                    height: randomAmplitude + '%',
+                    config: springConfig
+                })
+                randomIsMax = true;
+            }
+            if (randomIsMax && randomTimer > 200) {
+                setRandomProps({
+                    width: '100%',
+                    height: '100%',
+                    config: springConfig
+                })
+                randomIsMax = false;
+                randomTimer = 0;
+                randomCount = 0;
+                cancelAnimationFrame(ani);
             }
         }
 
@@ -116,10 +140,10 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
             backgroundColor: "black",
             // border: "1px solid white",
         }}>
-            <div ref={randomRef} style={{
+            <animated.div style={{
                 overflow: "hidden",
-                width: "100%",
-                height: "100%",
+                width: randomProps.width,
+                height: randomProps.height,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -127,10 +151,10 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                 transition: "0.5s",
                 padding: windowResolution.width / resolution.width / 36 + "px"
             }}>
-                <div ref={itemRef} className="" style={{
+                <animated.div className="" style={{
+                    width: clickProps.width,
+                    height: clickProps.height,
                     overflow: "hidden",
-                    width: "100%",
-                    height: "100%",
                     position: "relative",
                     // left: "1px",
                     // top: "1px",
@@ -151,8 +175,8 @@ export default function Segment({ coordinate, windowResolution, resolution, posi
                             left: position.left + "px"
                         }
                     } /> */}
-                </div>
-            </div>
+                </animated.div>
+            </animated.div>
         </div>
     )
 }

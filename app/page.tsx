@@ -2,6 +2,7 @@
 import styles from './page.module.css'
 import Segment from 'components/Segment'
 import { MouseEvent, useEffect, useState } from 'react'
+import { useSpring, animated } from '@react-spring/web';
 
 export default function Home() {
   const segmentRatio = { width: 18, height: 9 };
@@ -9,6 +10,7 @@ export default function Home() {
   const [resolution, setResolution] = useState({ width: 0, height: 0 });
   const [windowResolution, setWindowResolution] = useState({ width: 0, height: 0 });
   const [segments, setSegments] = useState<{ top: number, left: number, direction: string, char: string, color: number }[][]>([]);
+
 
   useEffect(() => {
     //console.log('start');
@@ -68,6 +70,7 @@ export default function Home() {
     setIsClicked(true);
   }
 
+
   const handlerMouseUp = (event: MouseEvent) => {
     setIsClicked(false);
   }
@@ -107,6 +110,7 @@ export default function Home() {
       }
       <img className={styles.fixed} src='/front.svg' style={{ filter: 'drop-shadow(0 0 20px #000)' }} />
       <div className={styles.feedback} onMouseDown={handlerMouseDown} onMouseUp={handlerMouseUp} />
+
     </main>
   )
 }
