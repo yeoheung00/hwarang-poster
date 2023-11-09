@@ -1,8 +1,7 @@
 'use client'
 import styles from './page.module.css'
 import Segment from 'components/Segment'
-import { MouseEvent, useEffect, useState } from 'react'
-import { useSpring, animated } from '@react-spring/web';
+import { MouseEvent, useEffect, useState, TouchEvent } from 'react'
 
 export default function Home() {
   const segmentRatio = { width: 18, height: 9 };
@@ -10,6 +9,7 @@ export default function Home() {
   const [resolution, setResolution] = useState({ width: 0, height: 0 });
   const [windowResolution, setWindowResolution] = useState({ width: 0, height: 0 });
   const [segments, setSegments] = useState<{ top: number, left: number, direction: string, char: string, color: number }[][]>([]);
+
 
 
   useEffect(() => {
@@ -89,9 +89,41 @@ export default function Home() {
     setTimeout(() => { random(); }, timer);
   }
 
+  const [coordinate, setCoordinate] = useState({ x: 0, y: 0 });
+
+  const touchStart = (event: TouchEvent) => {
+    const clickedX = event.changedTouches[0].clientX / (windowResolution.width / resolution.width);
+    const clickedY = event.changedTouches[0].clientY / (windowResolution.height / resolution.height);
+    setCoordinate({ x: clickedX, y: clickedY });
+  }
+
+  const touchMove = (event: TouchEvent) => {
+    const clickedX = event.changedTouches[0].clientX / (windowResolution.width / resolution.width);
+    const clickedY = event.changedTouches[0].clientY / (windowResolution.height / resolution.height);
+    setCoordinate({ x: clickedX, y: clickedY });
+  }
+
+  const touchEnd = (event: TouchEvent) => {
+    const clickedX = event.changedTouches[0].clientX / (windowResolution.width / resolution.width);
+    const clickedY = event.changedTouches[0].clientY / (windowResolution.height / resolution.height);
+    setCoordinate({ x: clickedX, y: clickedY });
+  }
+
+  const touchCancel = (event: TouchEvent) => {
+    setCoordinate({ x: -999, y: -999 })
+  }
+
+
+  const mouseMove = (event: MouseEvent) => {
+    const clickedX = event.clientX / (windowResolution.width / resolution.width);
+    const clickedY = event.clientY / (windowResolution.height / resolution.height);
+    setCoordinate({ x: clickedX, y: clickedY });
+  }
+
 
   return (
     <main className={styles.main}>
+      <img className={styles.fixed} src='/front.svg' style={{ filter: 'drop-shadow(0 0 20px #000)' }} />
       {
         segments.map((row, row_idx) => <div key={row_idx} className={styles.row} style={{
           position: 'relative',
@@ -103,13 +135,12 @@ export default function Home() {
             width: windowResolution.width / resolution.width + "px",
             height: windowResolution.height / resolution.height + "px",
           }}>
-            <Segment coordinate={{ x: col_idx, y: row_idx }} windowResolution={windowResolution} resolution={resolution} position={segments[row_idx][col_idx]} isClicked={isClicked} clickedCordinate={clickedCordinate} isRandom={isRandom} randomData={randomData} />
+            <Segment coordinate={{ x: col_idx, y: row_idx }} windowResolution={windowResolution} resolution={resolution} position={segments[row_idx][col_idx]} isClicked={isClicked} clickedCordinate={coordinate} isRandom={isRandom} randomData={randomData} />
           </div>)
           )}
         </div>)
       }
-      <img className={styles.fixed} src='/front.svg' style={{ filter: 'drop-shadow(0 0 20px #000)' }} />
-      <div className={styles.feedback} onMouseDown={handlerMouseDown} onMouseUp={handlerMouseUp} />
+      <div className={styles.feedback} onMouseDown={handlerMouseDown} onMouseMove={mouseMove} onMouseUp={handlerMouseUp} onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd} onTouchCancel={touchCancel} />
 
     </main>
   )

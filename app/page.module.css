@@ -9,12 +9,12 @@
   position: relative;
 }
 
-.row{
+.row {
   display: flex;
   gap: 0px;
 }
 
-.fixed{
+.fixed {
   position: absolute;
   top: 0;
   left: 0;
@@ -22,10 +22,10 @@
   height: 100%;
   object-fit: contain;
   background-color: transparent;
-  z-index: 1111;
+  z-index: 0;
 }
 
-.feedback{
+.feedback {
   width: 100%;
   height: 100%;
   position: absolute;
